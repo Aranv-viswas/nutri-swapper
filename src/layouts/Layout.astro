@@ -9,6 +9,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import {
   DEFAULT_LOCALE,
+  LOCALES,
   OG_LOCALE,
   alternatesFor,
   localizePath,
@@ -21,14 +22,24 @@ interface Props {
   /** English canonical path, e.g. "/swap/soya-chunks-to-eggs" */
   path?: string;
   lang?: Locale;
+  /** Comma-separated keywords for the <meta name="keywords"> tag */
+  keywords?: string;
   jsonLd?: Record<string, unknown>;
 }
 
-const { title, description, path = "/", lang = DEFAULT_LOCALE, jsonLd } =
-  Astro.props;
+const {
+  title,
+  description,
+  path = "/",
+  lang = DEFAULT_LOCALE,
+  keywords,
+  jsonLd,
+} = Astro.props;
 const SITE = "https://nutriswapper.com";
 const canonical = SITE + localizePath(path, lang);
 const alternates = alternatesFor(path, SITE);
+const ogImage = `${SITE}/web-app-manifest-512x512.png`;
+const altLocales = LOCALES.filter((l) => l !== lang);
 ---
 
 <!doctype html>
@@ -46,6 +57,9 @@ const alternates = alternatesFor(path, SITE);
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
+    <meta name="author" content="Nutri Swapper" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#000000" />
 
@@ -56,16 +70,30 @@ const alternates = alternatesFor(path, SITE);
       ))
     }
 
-    <!-- Open Graph / Twitter -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Nutri Swapper" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={OG_LOCALE[lang]} />
+    {
+      altLocales.map((l) => (
+        <meta property="og:locale:alternate" content={OG_LOCALE[l]} />
+      ))
+    }
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Nutri Swapper — macro & calorie swap calculator" />
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="Nutri Swapper — macro & calorie swap calculator" />
 
     {
       jsonLd && (

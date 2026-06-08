@@ -19,8 +19,32 @@ const SITE = "https://nutriswapper.com";
 
 const name = (slug: string) => foodName(slug, FOOD_BY_SLUG[slug].name, lang);
 
-const jsonLd = {
-  "@context": "https://schema.org",
+// English-only on-page SEO: keyword meta + long-form content + FAQ schema.
+const isEn = lang === "en";
+const keywords = isEn
+  ? "Nutri Swapper, nutri, nutrition, nutri swapper, nutri swap, nutri calculator, nutrition converter, nutri converter, nutri source, calorie swap, protein swap, nutrition swap, density swap calculator, food density swap calculator, nutrition calculator, weight match, macro and caloric density, macro calculator"
+  : undefined;
+
+const seoFaqs = [
+  {
+    q: "Is Nutri Swapper a nutri grain bar or a nutri protein shake?",
+    a: "No. Nutri Swapper is not a food brand, nutri grain bars or a nutri protein shake — it is a free online nutrition calculator and macro swap tool. If you searched for nutri source, nutri swap or nutri converter to turn one food's macros into another, this is the tool.",
+  },
+  {
+    q: "Does Nutri Swapper need an account?",
+    a: "No. There is no login, no paywall and no app to install — it is a zero-login nutrition swap calculator that works instantly in your browser.",
+  },
+  {
+    q: "How accurate is the nutri swap calculator?",
+    a: "Macros are per 100 g and based on standard nutrition data, so treat results as a close, practical estimate rather than lab-grade values.",
+  },
+  {
+    q: "What is a macro and calorie density swap?",
+    a: "It is matching the protein or calories of one ingredient with the correct weight of another. Nutri Swapper compares macro and caloric density directly, so it works as a density swap calculator and food density swap calculator for everyday ingredient substitutions.",
+  },
+];
+
+const webApp = {
   "@type": "WebApplication",
   name: "Nutri Swapper",
   applicationCategory: "HealthApplication",
@@ -29,6 +53,23 @@ const jsonLd = {
   url: SITE + localizePath("/", lang),
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
+
+const jsonLd = isEn
+  ? {
+      "@context": "https://schema.org",
+      "@graph": [
+        webApp,
+        {
+          "@type": "FAQPage",
+          mainEntity: seoFaqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        },
+      ],
+    }
+  : { "@context": "https://schema.org", ...webApp };
 
 const steps: Array<[string, string, string]> = [
   ["1", t("step1.t"), t("step1.d")],
@@ -42,6 +83,7 @@ const steps: Array<[string, string, string]> = [
   description={t("home.desc")}
   path="/"
   lang={lang}
+  keywords={keywords}
   jsonLd={jsonLd}
 >
   <!-- ── Hero + live calculator ─────────────────────────────── -->
@@ -171,4 +213,130 @@ const steps: Array<[string, string, string]> = [
       </div>
     </div>
   </section>
+
+  {/* ── Long-form SEO content (English) ─────────────────────── */}
+  {
+    isEn && (
+      <section class="border-t border-hairline">
+        <article class="mx-auto max-w-[760px] px-4 py-16 sm:px-6 sm:py-24">
+          <h2 class="text-3xl font-semibold tracking-[-1.28px] text-ink">
+            What is Nutri Swapper?
+          </h2>
+          <div class="mt-5 space-y-5 text-body leading-relaxed">
+            <p>
+              <strong class="text-ink">Nutri Swapper</strong> is a free macro and
+              calorie density swap calculator built for one job: telling you the
+              exact weight of a substitute ingredient that matches the protein or
+              calories of the food you ran out of. Instead of a bloated nutrition
+              log or a multi-step exchange chart, Nutri Swapper gives you an
+              instant, one-to-one weight match. Type the grams of what you have,
+              pick a replacement, and the nutri swap calculator solves for the gram
+              weight that keeps your target macro identical.
+            </p>
+            <p>
+              Most people open a nutrition calculator only to be pushed through
+              sign-ups, onboarding and slow, heavy pages. Nutri Swapper strips all
+              of that away. It is a zero-login nutrition swap tool that loads in
+              under a second on a phone — exactly when you need it, in the kitchen
+              mid-recipe or at the gym planning a meal. Whether you call it a
+              calorie swap, a protein swap or a nutrition swap, the math is the same
+              and the answer is on screen the moment you type.
+            </p>
+
+            <h3 class="pt-2 text-xl font-semibold tracking-[-0.6px] text-ink">
+              How the Nutri Swapper calculator works
+            </h3>
+            <p>
+              Every food in the database stores its macros per 100 grams, so the
+              nutri converter can compare any two ingredients on equal footing.
+              Choose <em class="text-ink not-italic">match protein</em> and Nutri
+              Swapper holds grams of protein constant while solving for weight:{" "}
+              <code class="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[13px] text-ink">
+                W_b = W_a × (P_a ÷ P_b)
+              </code>
+              . Choose <em class="text-ink not-italic">match calories</em> and it
+              holds energy constant instead:{" "}
+              <code class="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[13px] text-ink">
+                W_b = W_a × (C_a ÷ C_b)
+              </code>
+              . The result is a precise weight match plus a side-by-side macro
+              breakdown, so you see exactly what shifts — extra calories on a
+              protein swap, or more or less protein on a calorie swap.
+            </p>
+            <p>
+              This makes Nutri Swapper a genuine density swap calculator, not just a
+              converter. Because it compares macro and caloric density directly, it
+              surfaces the trade-off you actually care about: how much of food B
+              equals food A, and what that swap costs or saves you. It works as a
+              food density swap calculator for whole ingredients, a macro calculator
+              for meal prep, and a quick nutrition converter when a recipe calls for
+              something you do not have.
+            </p>
+
+            <h3 class="pt-2 text-xl font-semibold tracking-[-0.6px] text-ink">
+              Who uses a nutrition swap calculator
+            </h3>
+            <p>
+              Lifters and dieters use Nutri Swapper to keep protein on target when
+              an ingredient runs out. Meal-preppers use it to batch-cook around
+              what is in the pantry. Home cooks use the nutri calculator to
+              substitute one ingredient for another without wrecking a day's totals.
+              Common swaps — {" "}
+              <a class="text-link hover:underline" href="/swap/soya-chunks-to-eggs">
+                soya chunks to eggs
+              </a>
+              , {" "}
+              <a class="text-link hover:underline" href="/swap/paneer-to-tofu">
+                paneer to tofu
+              </a>
+              , {" "}
+              <a
+                class="text-link hover:underline"
+                href="/swap/peanuts-to-roasted-chana"
+              >
+                peanuts to roasted chana
+              </a>{" "}
+              and {" "}
+              <a
+                class="text-link hover:underline"
+                href="/swap/whey-protein-to-greek-yogurt"
+              >
+                whey protein to greek yogurt
+              </a>{" "}
+              — each have a dedicated page with the calculator pre-loaded, so you
+              jump straight to the answer.
+            </p>
+            <p>
+              Why use Nutri Swapper instead of a full macro tracker? A tracker is
+              built to log every meal across a day; Nutri Swapper is built for the
+              single moment of substitution. When you only need to answer “what
+              weight of this equals that,” a dedicated nutri swap calculator is
+              faster, lighter and easier than any general nutrition calculator or
+              macro calculator app.
+            </p>
+          </div>
+
+          <h2 class="mt-12 text-2xl font-semibold tracking-[-0.96px] text-ink">
+            Nutri Swapper FAQ
+          </h2>
+          <div class="mt-4 divide-y divide-hairline rounded-lg border border-hairline">
+            {seoFaqs.map((f) => (
+              <details class="group px-5 py-4">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink">
+                  {f.q}
+                  <span
+                    class="font-mono text-mute transition-transform group-open:rotate-45"
+                    aria-hidden="true"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p class="mt-3 text-sm leading-relaxed text-body">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </article>
+      </section>
+    )
+  }
 </Layout>

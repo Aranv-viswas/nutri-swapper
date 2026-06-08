@@ -117,9 +117,9 @@ export const ui = {
     "faq.a3":
       "Matched on calories, {wbC}g of {bl} gives {pBC}g protein versus {pA}g from the {al}.",
 
-    "home.title": "Nutri Swapper — Instant Macro & Calorie Ingredient Swap Calculator",
+    "home.title": "Nutri Swapper — Macro & Calorie Density Swap Calculator",
     "home.desc":
-      "Out of an ingredient? Instantly find the exact weight of a substitute that matches your protein or calories. Zero login, zero fluff — just swap and cook.",
+      "Nutri Swapper is a free macro and calorie density swap calculator. Find the exact weight of a substitute that matches your protein or calories — no login, instant.",
   } satisfies Dict,
 
   es: {

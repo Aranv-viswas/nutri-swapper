@@ -1,0 +1,15 @@
+---
+import Home from "../../components/pages/Home.astro";
+import { LOCALES, DEFAULT_LOCALE, type Locale } from "../../i18n/ui.ts";
+
+export function getStaticPaths() {
+  return LOCALES.filter((l) => l !== DEFAULT_LOCALE).map((lang) => ({
+    params: { lang },
+    props: { lang },
+  }));
+}
+
+const { lang } = Astro.props as { lang: Locale };
+---
+
+<Home lang={lang} />

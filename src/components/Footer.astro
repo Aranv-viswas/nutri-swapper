@@ -1,0 +1,96 @@
+---
+import { SWAP_PAIRS, FOOD_BY_SLUG } from "../data/foods.ts";
+import {
+  localizePath,
+  useTranslations,
+  DEFAULT_LOCALE,
+  type Locale,
+} from "../i18n/ui.ts";
+import { foodName } from "../i18n/foods.ts";
+
+interface Props {
+  lang?: Locale;
+}
+const { lang = DEFAULT_LOCALE } = Astro.props;
+const t = useTranslations(lang);
+const home = localizePath("/", lang);
+
+const featured = SWAP_PAIRS.slice(0, 6);
+const name = (slug: string) =>
+  foodName(slug, FOOD_BY_SLUG[slug].name, lang);
+---
+
+<footer class="border-t border-hairline">
+  <div class="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2">
+          <span
+            class="grid h-7 w-7 place-items-center rounded-md border border-hairline bg-surface font-mono text-sm text-ink"
+            aria-hidden="true">⇄</span
+          >
+          <span class="text-[15px] font-semibold tracking-tight text-ink"
+            >Nutri Swapper</span
+          >
+        </div>
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-body">
+          {t("footer.tagline")}
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-mono text-xs uppercase tracking-wider text-mute">
+          {t("footer.popular")}
+        </h2>
+        <ul class="mt-4 space-y-2.5">
+          {
+            featured.map(([a, b]) => (
+              <li>
+                <a
+                  href={localizePath(`/swap/${a}-to-${b}`, lang)}
+                  class="text-sm text-body transition-colors hover:text-ink"
+                >
+                  {name(a)} → {name(b)}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="font-mono text-xs uppercase tracking-wider text-mute">
+          {t("footer.tool")}
+        </h2>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li>
+            <a href={home} class="text-body transition-colors hover:text-ink"
+              >{t("footer.swapCalc")}</a
+            >
+          </li>
+          <li>
+            <a
+              href={`${home}#how`}
+              class="text-body transition-colors hover:text-ink"
+              >{t("nav.how")}</a
+            >
+          </li>
+          <li>
+            <a
+              href={`${home}#popular`}
+              class="text-body transition-colors hover:text-ink"
+              >{t("footer.allSwaps")}</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col gap-3 border-t border-hairline pt-6 text-xs text-mute sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© 2026 Nutri Swapper · nutriswapper.com</p>
+      <p class="max-w-md sm:text-right">{t("footer.disclaimer")}</p>
+    </div>
+  </div>
+</footer>

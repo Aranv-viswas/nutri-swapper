@@ -1,0 +1,174 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SwapCalculator from "../SwapCalculator.astro";
+import { SWAP_PAIRS, FOOD_BY_SLUG } from "../../data/foods.ts";
+import {
+  useTranslations,
+  localizePath,
+  DEFAULT_LOCALE,
+  type Locale,
+} from "../../i18n/ui.ts";
+import { foodName } from "../../i18n/foods.ts";
+
+interface Props {
+  lang?: Locale;
+}
+const { lang = DEFAULT_LOCALE } = Astro.props;
+const t = useTranslations(lang);
+const SITE = "https://nutriswapper.com";
+
+const name = (slug: string) => foodName(slug, FOOD_BY_SLUG[slug].name, lang);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Nutri Swapper",
+  applicationCategory: "HealthApplication",
+  operatingSystem: "Web",
+  description: t("home.desc"),
+  url: SITE + localizePath("/", lang),
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+
+const steps: Array<[string, string, string]> = [
+  ["1", t("step1.t"), t("step1.d")],
+  ["2", t("step2.t"), t("step2.d")],
+  ["3", t("step3.t"), t("step3.d")],
+];
+---
+
+<Layout
+  title={t("home.title")}
+  description={t("home.desc")}
+  path="/"
+  lang={lang}
+  jsonLd={jsonLd}
+>
+  <!-- ── Hero + live calculator ─────────────────────────────── -->
+  <section class="relative isolate overflow-hidden border-b border-hairline">
+    <div class="mesh-bg pointer-events-none absolute inset-0 -z-10"></div>
+    <div class="mx-auto max-w-[1100px] px-4 pb-16 pt-16 sm:px-6 sm:pb-24 sm:pt-24">
+      <div class="mx-auto max-w-2xl text-center">
+        <span
+          class="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface/60 px-3 py-1 font-mono text-xs text-body backdrop-blur"
+        >
+          <span class="h-1.5 w-1.5 rounded-full bg-protein"></span>
+          {t("hero.badge")}
+        </span>
+        <h1
+          class="mt-6 text-[40px] font-semibold leading-[1.05] tracking-[-2px] text-ink sm:text-[56px] sm:tracking-[-2.8px]"
+        >
+          {t("hero.title1")}<br />
+          <span class="gradient-text">{t("hero.title2")}</span>
+        </h1>
+        <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-body sm:text-xl">
+          {t("hero.sub")}
+        </p>
+      </div>
+
+      <div class="mx-auto mt-12 max-w-2xl">
+        <SwapCalculator
+          defaultA="soya-chunks"
+          defaultB="eggs"
+          defaultMode="protein"
+          lang={lang}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Popular swaps grid ─────────────────────────────────── -->
+  <section id="popular" class="border-b border-hairline">
+    <div class="mx-auto max-w-[1100px] px-4 py-16 sm:px-6 sm:py-24">
+      <div class="max-w-2xl">
+        <p class="font-mono text-xs uppercase tracking-wider text-mute">
+          // {t("popular.eyebrow")}
+        </p>
+        <h2 class="mt-3 text-3xl font-semibold tracking-[-1.28px] text-ink">
+          {t("popular.title")}
+        </h2>
+        <p class="mt-3 text-body">{t("popular.sub")}</p>
+      </div>
+
+      <div class="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          SWAP_PAIRS.map(([a, b]) => {
+            const fa = FOOD_BY_SLUG[a];
+            const fb = FOOD_BY_SLUG[b];
+            return (
+              <a
+                href={localizePath(`/swap/${a}-to-${b}`, lang)}
+                class="group flex items-center justify-between rounded-lg border border-hairline bg-surface p-4 transition-colors hover:border-hairline-strong hover:bg-surface-3"
+              >
+                <span class="flex items-center gap-3">
+                  <span class="text-xl" aria-hidden="true">
+                    {fa.glyph}
+                  </span>
+                  <span class="text-sm font-medium text-ink">
+                    {name(a)}
+                    <span class="px-1.5 font-mono text-mute">→</span>
+                    {name(b)}
+                  </span>
+                  <span class="text-xl" aria-hidden="true">
+                    {fb.glyph}
+                  </span>
+                </span>
+                <span class="font-mono text-mute transition-transform group-hover:translate-x-0.5">
+                  ↗
+                </span>
+              </a>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How it works ───────────────────────────────────────── -->
+  <section id="how">
+    <div class="mx-auto max-w-[1100px] px-4 py-16 sm:px-6 sm:py-24">
+      <div class="max-w-2xl">
+        <p class="font-mono text-xs uppercase tracking-wider text-mute">
+          // {t("how.eyebrow")}
+        </p>
+        <h2 class="mt-3 text-3xl font-semibold tracking-[-1.28px] text-ink">
+          {t("how.title")}
+        </h2>
+        <p class="mt-3 text-body">{t("how.sub")}</p>
+      </div>
+
+      <div class="mt-10 grid gap-4 lg:grid-cols-2">
+        <div class="card p-6">
+          <p class="font-mono text-xs uppercase tracking-wider text-protein">
+            {t("calc.matchProtein")}
+          </p>
+          <p class="mt-3 text-body">{t("how.matchProteinDesc")}</p>
+          <pre
+            class="mt-4 overflow-x-auto rounded-md border border-hairline bg-surface-2 p-4 font-mono text-[13px] leading-6 text-ink"><code>W<sub>b</sub> = W<sub>a</sub> × (P<sub>a</sub> / P<sub>b</sub>)</code></pre>
+        </div>
+        <div class="card p-6">
+          <p class="font-mono text-xs uppercase tracking-wider text-energy">
+            {t("calc.matchCalories")}
+          </p>
+          <p class="mt-3 text-body">{t("how.matchCaloriesDesc")}</p>
+          <pre
+            class="mt-4 overflow-x-auto rounded-md border border-hairline bg-surface-2 p-4 font-mono text-[13px] leading-6 text-ink"><code>W<sub>b</sub> = W<sub>a</sub> × (C<sub>a</sub> / C<sub>b</sub>)</code></pre>
+        </div>
+      </div>
+
+      <div class="mt-4 grid gap-4 sm:grid-cols-3">
+        {
+          steps.map(([n, h, p]) => (
+            <div class="rounded-lg border border-hairline bg-surface p-5">
+              <span class="grid h-7 w-7 place-items-center rounded-full border border-hairline font-mono text-sm text-ink">
+                {n}
+              </span>
+              <h3 class="mt-4 text-base font-semibold text-ink">{h}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-body">{p}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

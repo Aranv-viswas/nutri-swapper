@@ -1,0 +1,224 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SwapCalculator from "../SwapCalculator.astro";
+import { FOOD_BY_SLUG, SWAP_PAIRS, computeSwap } from "../../data/foods.ts";
+import {
+  useTranslations,
+  localizePath,
+  DEFAULT_LOCALE,
+  type Locale,
+} from "../../i18n/ui.ts";
+import { foodName } from "../../i18n/foods.ts";
+
+interface Props {
+  a: string;
+  b: string;
+  lang?: Locale;
+}
+const { a, b, lang = DEFAULT_LOCALE } = Astro.props;
+const t = useTranslations(lang);
+const SITE = "https://nutriswapper.com";
+const path = `/swap/${a}-to-${b}`;
+
+const foodA = FOOD_BY_SLUG[a];
+const foodB = FOOD_BY_SLUG[b];
+const nameA = foodName(a, foodA.name, lang);
+const nameB = foodName(b, foodB.name, lang);
+// English reads better lowercased mid-sentence; other scripts have no case.
+const al = lang === "en" ? nameA.toLowerCase() : nameA;
+const bl = lang === "en" ? nameB.toLowerCase() : nameB;
+
+const r1 = (n: number) => (n >= 100 ? Math.round(n) : Math.round(n * 10) / 10);
+
+const refWeight = foodA.portion;
+const byProtein = computeSwap(foodA, foodB, refWeight, "protein");
+const byCalories = computeSwap(foodA, foodB, refWeight, "calories");
+
+// Shared template variables.
+const v = {
+  a: nameA,
+  b: nameB,
+  al,
+  bl,
+  portion: foodA.portionLabel,
+  wa: r1(refWeight),
+  wbP: r1(byProtein.weightB),
+  wbC: r1(byCalories.weightB),
+  kcalA: r1(byProtein.a.kcal),
+  kcalBP: r1(byProtein.b.kcal),
+  dk: r1(Math.abs(byProtein.b.kcal - byProtein.a.kcal)),
+  pBC: r1(byCalories.b.protein),
+  pA: r1(byCalories.a.protein),
+};
+
+const title = t("swap.titleTpl", v);
+const description = t("swap.descTpl", v);
+
+const macros: Array<{ label: string; key: "kcal" | "protein" | "carbs" | "fat"; suffix: string }> = [
+  { label: t("calc.calories"), key: "kcal", suffix: " kcal" },
+  { label: t("calc.protein"), key: "protein", suffix: " g" },
+  { label: t("calc.carbs"), key: "carbs", suffix: " g" },
+  { label: t("calc.fat"), key: "fat", suffix: " g" },
+];
+
+const faqs = [
+  { q: t("faq.q1", v), a: t("faq.a1", v) },
+  { q: t("faq.q2", v), a: t("faq.a2", v) },
+  { q: t("faq.q3", v), a: t("faq.a3", v) },
+];
+
+const canonical = SITE + localizePath(path, lang);
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: t("swap.home"), item: SITE + localizePath("/", lang) },
+        { "@type": "ListItem", position: 2, name: t("swap.h1Tpl", v), item: canonical },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqs.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    },
+  ],
+};
+
+const related = SWAP_PAIRS.filter(
+  ([x, y]) =>
+    `${x}-to-${y}` !== `${a}-to-${b}` &&
+    (x === a || y === b || x === b || y === a),
+).slice(0, 6);
+---
+
+<Layout title={title} description={description} path={path} lang={lang} jsonLd={jsonLd}>
+  <div class="mx-auto max-w-[860px] px-4 py-10 sm:px-6 sm:py-14">
+    <nav class="font-mono text-xs text-mute" aria-label="Breadcrumb">
+      <a href={localizePath("/", lang)} class="transition-colors hover:text-ink"
+        >{t("swap.home")}</a
+      >
+      <span class="px-1.5">/</span>
+      <span class="text-body">{nameA} → {nameB}</span>
+    </nav>
+
+    <header class="mt-6">
+      <h1
+        class="text-3xl font-semibold leading-tight tracking-[-1.4px] text-ink sm:text-[40px] sm:tracking-[-2px]"
+      >
+        {t("swap.h1Tpl", v)}
+      </h1>
+      <p class="mt-4 text-lg leading-relaxed text-body">{t("swap.leadTpl", v)}</p>
+    </header>
+
+    <div class="mt-8">
+      <SwapCalculator
+        defaultA={a}
+        defaultB={b}
+        defaultWeight={refWeight}
+        defaultMode="protein"
+        lang={lang}
+      />
+    </div>
+
+    <!-- Reference table (static, crawlable) -->
+    <section class="mt-12">
+      <h2 class="text-xl font-semibold tracking-[-0.6px] text-ink">
+        {t("swap.per100Tpl", v)}
+      </h2>
+      <div class="mt-4 overflow-hidden rounded-lg border border-hairline">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-hairline bg-surface-2 text-left">
+              <th
+                class="px-4 py-2.5 font-mono text-xs font-normal uppercase tracking-wider text-mute"
+                >{t("swap.per100Head")}</th
+              >
+              <th class="px-4 py-2.5 text-right font-medium text-body"
+                >{foodA.glyph} {nameA}</th
+              >
+              <th class="px-4 py-2.5 text-right font-medium text-ink"
+                >{foodB.glyph} {nameB}</th
+              >
+            </tr>
+          </thead>
+          <tbody class="font-mono tabular-nums">
+            {
+              macros.map((m) => (
+                <tr class="border-b border-hairline last:border-0">
+                  <td class="px-4 py-2.5 font-sans text-body">{m.label}</td>
+                  <td class="px-4 py-2.5 text-right text-body">
+                    {foodA[m.key]}
+                    {m.suffix}
+                  </td>
+                  <td class="px-4 py-2.5 text-right text-ink">
+                    {foodB[m.key]}
+                    {m.suffix}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 text-xs text-mute">{t("swap.tableNote")}</p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="mt-12">
+      <h2 class="text-xl font-semibold tracking-[-0.6px] text-ink">
+        {t("swap.faqTitleTpl", v)}
+      </h2>
+      <div class="mt-4 divide-y divide-hairline rounded-lg border border-hairline">
+        {
+          faqs.map((f) => (
+            <details class="group px-5 py-4">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink">
+                {f.q}
+                <span
+                  class="font-mono text-mute transition-transform group-open:rotate-45"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </summary>
+              <p class="mt-3 text-sm leading-relaxed text-body">{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Related -->
+    {
+      related.length > 0 && (
+        <section class="mt-12">
+          <h2 class="font-mono text-xs uppercase tracking-wider text-mute">
+            {t("swap.related")}
+          </h2>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            {related.map(([x, y]) => (
+              <a
+                href={localizePath(`/swap/${x}-to-${y}`, lang)}
+                class="group flex items-center justify-between rounded-lg border border-hairline bg-surface p-4 transition-colors hover:border-hairline-strong hover:bg-surface-3"
+              >
+                <span class="text-sm font-medium text-ink">
+                  {foodName(x, FOOD_BY_SLUG[x].name, lang)}
+                  <span class="px-1.5 font-mono text-mute">→</span>
+                  {foodName(y, FOOD_BY_SLUG[y].name, lang)}
+                </span>
+                <span class="font-mono text-mute transition-transform group-hover:translate-x-0.5">
+                  ↗
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </div>
+</Layout>

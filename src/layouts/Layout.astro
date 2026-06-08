@@ -1,27 +1,95 @@
 ---
-import '../styles/global.css';
+// Self-hosted fonts — no third-party request, no render-blocking <link>. Inter ships
+// as a variable wght axis (unicode-range lazy-loads only the Latin woff2 for EN content).
+import "@fontsource-variable/inter/wght.css";
+import "@fontsource/jetbrains-mono/latin-400.css";
+import "@fontsource/jetbrains-mono/latin-500.css";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import {
+  DEFAULT_LOCALE,
+  OG_LOCALE,
+  alternatesFor,
+  localizePath,
+  type Locale,
+} from "../i18n/ui.ts";
+
+interface Props {
+  title: string;
+  description: string;
+  /** English canonical path, e.g. "/swap/soya-chunks-to-eggs" */
+  path?: string;
+  lang?: Locale;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, path = "/", lang = DEFAULT_LOCALE, jsonLd } =
+  Astro.props;
+const SITE = "https://nutriswapper.com";
+const canonical = SITE + localizePath(path, lang);
+const alternates = alternatesFor(path, SITE);
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#000000" />
+
+    <!-- hreflang alternates for international SEO -->
+    {
+      alternates.map((alt) => (
+        <link rel="alternate" hreflang={alt.lang} href={alt.href} />
+      ))
+    }
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Nutri Swapper" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={OG_LOCALE[lang]} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    {
+      jsonLd && (
+        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+      )
+    }
+
+    <!-- No-FOUC theme: stamp data-theme before first paint -->
+    <script is:inline>
+      (() => {
+        try {
+          const saved = localStorage.getItem("theme");
+          const sys = matchMedia("(prefers-color-scheme: light)").matches
+            ? "light"
+            : "dark";
+          document.documentElement.dataset.theme = saved || sys;
+        } catch {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="flex min-h-screen flex-col">
+      <Header lang={lang} path={path} />
+      <main class="flex-1">
+        <slot />
+      </main>
+      <Footer lang={lang} />
+    </div>
+  </body>
+</html>

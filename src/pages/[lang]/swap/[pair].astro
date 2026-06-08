@@ -1,0 +1,19 @@
+---
+import SwapPage from "../../../components/pages/SwapPage.astro";
+import { SWAP_PAIRS } from "../../../data/foods.ts";
+import { LOCALES, DEFAULT_LOCALE, type Locale } from "../../../i18n/ui.ts";
+
+export function getStaticPaths() {
+  const langs = LOCALES.filter((l) => l !== DEFAULT_LOCALE);
+  return langs.flatMap((lang) =>
+    SWAP_PAIRS.map(([a, b]) => ({
+      params: { lang, pair: `${a}-to-${b}` },
+      props: { a, b, lang },
+    })),
+  );
+}
+
+const { a, b, lang } = Astro.props as { a: string; b: string; lang: Locale };
+---
+
+<SwapPage a={a} b={b} lang={lang} />

@@ -1,0 +1,423 @@
+---
+import { FOODS } from "../data/foods.ts";
+import type { SwapMode } from "../data/foods.ts";
+import {
+  useTranslations,
+  DEFAULT_LOCALE,
+  type Locale,
+} from "../i18n/ui.ts";
+import { foodName } from "../i18n/foods.ts";
+
+interface Props {
+  defaultA?: string;
+  defaultB?: string;
+  defaultWeight?: number;
+  defaultMode?: SwapMode;
+  lang?: Locale;
+}
+
+const {
+  defaultA = "soya-chunks",
+  defaultB = "eggs",
+  defaultWeight,
+  defaultMode = "protein",
+  lang = DEFAULT_LOCALE,
+} = Astro.props;
+
+const t = useTranslations(lang);
+const startA = FOODS.find((f) => f.slug === defaultA) ?? FOODS[0];
+const startB = FOODS.find((f) => f.slug === defaultB) ?? FOODS[1];
+const startWeight = defaultWeight ?? startA.portion;
+
+// Lightweight payload the island reads on the client — names already localized.
+const payload = FOODS.map((f) => ({
+  slug: f.slug,
+  name: foodName(f.slug, f.name, lang),
+  glyph: f.glyph,
+  kcal: f.kcal,
+  protein: f.protein,
+  carbs: f.carbs,
+  fat: f.fat,
+}));
+
+// Template strings the script interpolates at runtime.
+const i18n = {
+  sameProtein: t("calc.sameProtein"),
+  sameCalories: t("calc.sameCalories"),
+  servingsTpl: t("calc.servingsTpl"),
+  insightProteinMore: t("calc.insightProteinMore"),
+  insightProteinLess: t("calc.insightProteinLess"),
+  insightCaloriesMore: t("calc.insightCaloriesMore"),
+  insightCaloriesLess: t("calc.insightCaloriesLess"),
+};
+
+const localName = (slug: string) => {
+  const f = FOODS.find((x) => x.slug === slug)!;
+  return foodName(slug, f.name, lang);
+};
+
+const selectClasses =
+  "appearance-none rounded-sm border border-hairline bg-surface-2 py-1.5 pl-2.5 pr-8 text-ink font-medium outline-none transition-colors hover:border-hairline-strong focus-visible:border-link";
+---
+
+<section
+  class="card relative overflow-hidden p-5 sm:p-7"
+  data-swap-calc
+  data-default-mode={defaultMode}
+>
+  <script type="application/json" data-foods set:html={JSON.stringify(payload)}
+  ></script>
+  <script type="application/json" data-i18n set:html={JSON.stringify(i18n)}
+  ></script>
+
+  <!-- Mode segmented control -->
+  <div
+    class="inline-flex rounded-md border border-hairline bg-surface-2 p-0.5 text-sm"
+    role="group"
+    aria-label={t("calc.modeAria")}
+  >
+    <button
+      type="button"
+      data-mode="protein"
+      aria-pressed={defaultMode === "protein"}
+      class="rounded-[5px] px-3 py-1.5 font-medium text-body transition-colors aria-pressed:bg-ink aria-pressed:text-canvas hover:text-ink"
+      >{t("calc.matchProtein")}</button
+    >
+    <button
+      type="button"
+      data-mode="calories"
+      aria-pressed={defaultMode === "calories"}
+      class="rounded-[5px] px-3 py-1.5 font-medium text-body transition-colors aria-pressed:bg-ink aria-pressed:text-canvas hover:text-ink"
+      >{t("calc.matchCalories")}</button
+    >
+  </div>
+
+  <!-- Mad-libs sentence -->
+  <div
+    class="mt-6 flex flex-wrap items-center gap-x-2 gap-y-3 text-lg leading-relaxed text-body sm:text-xl"
+  >
+    <span>{t("calc.ihave")}</span>
+    <span
+      class="inline-flex items-center rounded-sm border border-hairline bg-surface-2 focus-within:border-link"
+    >
+      <input
+        type="number"
+        data-weight-input
+        value={startWeight}
+        min="1"
+        max="2000"
+        inputmode="numeric"
+        aria-label={t("calc.weightAria")}
+        class="w-16 bg-transparent py-1.5 pl-2.5 text-right font-mono font-medium text-ink outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+      />
+      <span class="py-1.5 pr-2.5 font-mono text-sm text-mute">g</span>
+    </span>
+    <span>{t("calc.of")}</span>
+    <span class="relative inline-flex items-center">
+      <select data-select-a aria-label={t("calc.sourceAria")} class={selectClasses}>
+        {
+          FOODS.map((f) => (
+            <option value={f.slug} selected={f.slug === defaultA}>
+              {localName(f.slug)}
+            </option>
+          ))
+        }
+      </select>
+      <svg
+        class="pointer-events-none absolute right-2.5 h-3.5 w-3.5 text-mute"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg
+      >
+    </span>
+
+    <button
+      type="button"
+      data-flip
+      aria-label={t("calc.flipAria")}
+      class="grid h-8 w-8 place-items-center rounded-full border border-hairline bg-surface text-body transition-colors hover:border-hairline-strong hover:text-ink"
+    >
+      <svg
+        class="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+        ><path d="M8 3 4 7l4 4" /><path d="M4 7h16" /><path d="m16 21 4-4-4-4"
+        ></path><path d="M20 17H4"></path></svg
+      >
+    </button>
+
+    <span data-metric-word>{t("calc.sameProtein")}</span>
+    <span>{t("calc.from")}</span>
+    <span class="relative inline-flex items-center">
+      <select data-select-b aria-label={t("calc.targetAria")} class={selectClasses}>
+        {
+          FOODS.map((f) => (
+            <option value={f.slug} selected={f.slug === defaultB}>
+              {localName(f.slug)}
+            </option>
+          ))
+        }
+      </select>
+      <svg
+        class="pointer-events-none absolute right-2.5 h-3.5 w-3.5 text-mute"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg
+      >
+    </span>
+  </div>
+
+  <!-- Weight slider -->
+  <div class="mt-6">
+    <div
+      class="mb-2 flex items-center justify-between font-mono text-xs text-mute"
+    >
+      <span>{t("calc.dragHint")}</span>
+    </div>
+    <input
+      type="range"
+      data-weight-slider
+      value={startWeight}
+      min="5"
+      max="300"
+      step="1"
+      aria-label={t("calc.dragHint")}
+    />
+  </div>
+
+  <!-- Result -->
+  <div
+    class="mt-7 flex flex-wrap items-end justify-between gap-4 rounded-lg border border-hairline bg-surface-2 p-5"
+  >
+    <div>
+      <p class="font-mono text-xs uppercase tracking-wider text-mute">
+        {t("calc.youNeed")}
+      </p>
+      <p class="mt-1 flex items-baseline gap-2">
+        <span
+          data-result-weight
+          class="font-mono text-[40px] font-medium leading-none text-ink tabular-nums sm:text-5xl"
+          >—</span
+        >
+        <span class="font-mono text-2xl text-body">g</span>
+      </p>
+    </div>
+    <p class="text-right text-sm text-body">
+      {t("calc.ofResult")}
+      <span data-result-name class="font-medium text-ink">{localName(defaultB)}</span>
+      <span data-result-glyph aria-hidden="true">{startB.glyph}</span><br />
+      <span data-result-portion class="text-mute"></span>
+    </p>
+  </div>
+
+  <!-- Insight callout -->
+  <p
+    data-insight
+    class="mt-4 rounded-md border border-hairline bg-surface px-4 py-3 text-sm text-body"
+  >
+  </p>
+
+  <!-- Macro comparison table -->
+  <div class="mt-4 overflow-hidden rounded-lg border border-hairline">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-hairline bg-surface-2 text-left">
+          <th
+            class="px-4 py-2.5 font-mono text-xs font-normal uppercase tracking-wider text-mute"
+            >{t("calc.perPortion")}</th
+          >
+          <th data-head-a class="px-4 py-2.5 text-right font-medium text-body"
+          ></th>
+          <th data-head-b class="px-4 py-2.5 text-right font-medium text-ink"
+          ></th>
+        </tr>
+      </thead>
+      <tbody class="font-mono tabular-nums" data-table-body>
+        <tr data-row="kcal" class="border-b border-hairline">
+          <td class="px-4 py-2.5 font-sans text-body">{t("calc.calories")}</td>
+          <td data-cell-a class="px-4 py-2.5 text-right text-body"></td>
+          <td data-cell-b class="px-4 py-2.5 text-right text-ink"></td>
+        </tr>
+        <tr data-row="protein" class="border-b border-hairline">
+          <td class="px-4 py-2.5 font-sans text-body">{t("calc.protein")}</td>
+          <td data-cell-a class="px-4 py-2.5 text-right text-body"></td>
+          <td data-cell-b class="px-4 py-2.5 text-right text-ink"></td>
+        </tr>
+        <tr data-row="carbs" class="border-b border-hairline">
+          <td class="px-4 py-2.5 font-sans text-body">{t("calc.carbs")}</td>
+          <td data-cell-a class="px-4 py-2.5 text-right text-body"></td>
+          <td data-cell-b class="px-4 py-2.5 text-right text-ink"></td>
+        </tr>
+        <tr data-row="fat">
+          <td class="px-4 py-2.5 font-sans text-body">{t("calc.fat")}</td>
+          <td data-cell-a class="px-4 py-2.5 text-right text-body"></td>
+          <td data-cell-b class="px-4 py-2.5 text-right text-ink"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+  type Macro = "kcal" | "protein" | "carbs" | "fat";
+  interface FoodLite {
+    slug: string;
+    name: string;
+    glyph: string;
+    kcal: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  }
+  type I18n = Record<string, string>;
+
+  const interp = (s: string, v: Record<string, string | number>) =>
+    s.replace(/\{(\w+)\}/g, (_, k) => (k in v ? String(v[k]) : `{${k}}`));
+
+  function initCalculator(root: HTMLElement) {
+    const foods: FoodLite[] = JSON.parse(
+      root.querySelector<HTMLScriptElement>("[data-foods]")!.textContent || "[]",
+    );
+    const i18n: I18n = JSON.parse(
+      root.querySelector<HTMLScriptElement>("[data-i18n]")!.textContent || "{}",
+    );
+    const bySlug = new Map(foods.map((f) => [f.slug, f]));
+
+    const $ = <T extends HTMLElement>(sel: string) =>
+      root.querySelector<T>(sel)!;
+    const selectA = $<HTMLSelectElement>("[data-select-a]");
+    const selectB = $<HTMLSelectElement>("[data-select-b]");
+    const weightInput = $<HTMLInputElement>("[data-weight-input]");
+    const slider = $<HTMLInputElement>("[data-weight-slider]");
+    const modeButtons = Array.from(
+      root.querySelectorAll<HTMLButtonElement>("[data-mode]"),
+    );
+
+    let mode: "protein" | "calories" =
+      (root.dataset.defaultMode as "protein" | "calories") || "protein";
+
+    const fmt = (n: number) =>
+      n >= 100 ? Math.round(n).toString() : n.toFixed(1).replace(/\.0$/, "");
+
+    function render() {
+      const a = bySlug.get(selectA.value)!;
+      const b = bySlug.get(selectB.value)!;
+      let weight = parseFloat(weightInput.value);
+      if (!Number.isFinite(weight) || weight <= 0) weight = 0;
+
+      const ratio =
+        mode === "protein" ? a.protein / b.protein : a.kcal / b.kcal;
+      const weightB = weight * ratio;
+
+      const profile = (
+        food: FoodLite,
+        grams: number,
+      ): Record<Macro, number> => ({
+        kcal: (food.kcal * grams) / 100,
+        protein: (food.protein * grams) / 100,
+        carbs: (food.carbs * grams) / 100,
+        fat: (food.fat * grams) / 100,
+      });
+      const pa = profile(a, weight);
+      const pb = profile(b, weightB);
+
+      $("[data-result-weight]").textContent = fmt(weightB);
+      $("[data-result-name]").textContent = b.name;
+      $("[data-result-glyph]").textContent = b.glyph;
+      $("[data-result-portion]").textContent = interp(i18n.servingsTpl, {
+        n: (weightB / 100).toFixed(1),
+      });
+
+      $("[data-metric-word]").textContent =
+        mode === "protein" ? i18n.sameProtein : i18n.sameCalories;
+
+      $("[data-head-a]").textContent = `${fmt(weight)}g ${a.name}`;
+      $("[data-head-b]").textContent = `${fmt(weightB)}g ${b.name}`;
+
+      const rows: Array<{ key: Macro; suffix: string }> = [
+        { key: "kcal", suffix: "" },
+        { key: "protein", suffix: "g" },
+        { key: "carbs", suffix: "g" },
+        { key: "fat", suffix: "g" },
+      ];
+      const matchedRow = mode === "protein" ? "protein" : "kcal";
+      for (const { key, suffix } of rows) {
+        const tr = root.querySelector<HTMLTableRowElement>(
+          `[data-row="${key}"]`,
+        )!;
+        tr.querySelector<HTMLElement>("[data-cell-a]")!.textContent =
+          fmt(pa[key]) + suffix;
+        tr.querySelector<HTMLElement>("[data-cell-b]")!.textContent =
+          fmt(pb[key]) + suffix;
+        tr.style.background = key === matchedRow ? "rgba(0,223,216,0.06)" : "";
+      }
+
+      const insight = $("[data-insight]");
+      if (mode === "protein") {
+        const dk = pb.kcal - pa.kcal;
+        insight.textContent = interp(
+          dk >= 0 ? i18n.insightProteinMore : i18n.insightProteinLess,
+          { kept: `${fmt(pa.protein)}g`, food: b.name, delta: fmt(Math.abs(dk)) },
+        );
+      } else {
+        const dp = pb.protein - pa.protein;
+        insight.textContent = interp(
+          dp >= 0 ? i18n.insightCaloriesMore : i18n.insightCaloriesLess,
+          {
+            kept: `${fmt(pa.kcal)} kcal`,
+            food: b.name,
+            delta: fmt(Math.abs(dp)),
+          },
+        );
+      }
+    }
+
+    selectA.addEventListener("change", render);
+    selectB.addEventListener("change", render);
+
+    weightInput.addEventListener("input", () => {
+      const v = parseFloat(weightInput.value);
+      if (Number.isFinite(v)) {
+        slider.value = String(
+          Math.min(Number(slider.max), Math.max(Number(slider.min), v)),
+        );
+      }
+      render();
+    });
+
+    slider.addEventListener("input", () => {
+      weightInput.value = slider.value;
+      render();
+    });
+
+    modeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        mode = btn.dataset.mode as "protein" | "calories";
+        modeButtons.forEach((b) =>
+          b.setAttribute("aria-pressed", String(b === btn)),
+        );
+        render();
+      });
+    });
+
+    $("[data-flip]").addEventListener("click", () => {
+      const a = selectA.value;
+      selectA.value = selectB.value;
+      selectB.value = a;
+      render();
+    });
+
+    render();
+  }
+
+  document
+    .querySelectorAll<HTMLElement>("[data-swap-calc]")
+    .forEach(initCalculator);
+</script>

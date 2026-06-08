@@ -1,0 +1,15 @@
+---
+import SwapPage from "../../components/pages/SwapPage.astro";
+import { SWAP_PAIRS } from "../../data/foods.ts";
+
+export function getStaticPaths() {
+  return SWAP_PAIRS.map(([a, b]) => ({
+    params: { pair: `${a}-to-${b}` },
+    props: { a, b },
+  }));
+}
+
+const { a, b } = Astro.props;
+---
+
+<SwapPage a={a} b={b} lang="en" />

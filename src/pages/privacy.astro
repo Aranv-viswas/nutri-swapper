@@ -1,0 +1,117 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "Privacy Policy — Nutri Swapper";
+const description =
+  "Nutri Swapper's privacy policy. We collect no personal data, use no tracking cookies, and run every calculation in your browser. Here's exactly how it works.";
+const UPDATED = "June 9, 2026";
+const EMAIL = "arnab47biswas@gmail.com";
+---
+
+<Layout title={title} description={description} path="/privacy" localized={false}>
+  <article class="mx-auto max-w-[760px] px-4 py-16 sm:px-6 sm:py-24">
+    <p class="font-mono text-xs uppercase tracking-wider text-mute">// Legal</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-[-2px] text-ink sm:text-5xl">
+      Privacy Policy
+    </h1>
+    <p class="mt-3 font-mono text-xs text-mute">Last updated: {UPDATED}</p>
+
+    <div class="mt-8 space-y-5 text-body leading-relaxed">
+      <p>
+        Nutri Swapper is built to respect your privacy by default. We do not
+        require an account, and we do not collect, sell, or share personal
+        information. This policy explains what little data is involved and how it
+        is handled.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        Information we collect
+      </h2>
+      <p>
+        <strong class="text-ink">No personal information.</strong> There is no
+        sign-up, no login, and no form that stores personal details on our
+        servers. The calculator runs entirely in your browser; the ingredients
+        and weights you enter are never transmitted to us. We do use analytics to
+        measure aggregate traffic (see “Analytics and cookies” below), but we do
+        not collect your name, email, or any data that personally identifies you.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        Local storage on your device
+      </h2>
+      <p>
+        To remember your preferences between visits, we store two small values in
+        your browser's local storage: your chosen <em class="text-ink not-italic"
+          >theme</em
+        > (dark or light) and your <em class="text-ink not-italic">language</em>.
+        This data stays on your device, is never sent anywhere, and can be cleared
+        at any time by clearing your browser data.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        Analytics and cookies
+      </h2>
+      <p>
+        We use Google Analytics (GA4) to understand aggregate, anonymous usage —
+        which pages are popular and how visitors reach the site. Google Analytics
+        sets cookies and may process limited data such as a truncated IP address,
+        device and browser type, approximate region, and the pages you view. This
+        information is pseudonymous and is not used to personally identify you. We
+        do not use advertising pixels and we never sell your data.
+      </p>
+      <p>
+        You can opt out using the official
+        <a
+          class="text-link hover:underline"
+          href="https://tools.google.com/dlpage/gaoptout"
+          rel="noopener"
+          target="_blank">Google Analytics opt-out browser add-on</a
+        >, or through your browser's privacy and cookie controls. See
+        <a
+          class="text-link hover:underline"
+          href="https://policies.google.com/privacy"
+          rel="noopener"
+          target="_blank">Google's Privacy Policy</a
+        > for how Google handles this data. Our fonts are self-hosted, so your visit
+        does not call out to external font or CDN providers.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        Email you send us
+      </h2>
+      <p>
+        If you contact us by email, we receive whatever you choose to include in
+        that message and use it only to respond. We do not add you to any mailing
+        list.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        Children's privacy
+      </h2>
+      <p>
+        Nutri Swapper is a general-audience informational tool and is not directed
+        at children under 13. Because we collect no personal data, no information
+        from children is gathered.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        Changes to this policy
+      </h2>
+      <p>
+        We may update this policy as the tool evolves. Material changes will be
+        reflected by the “last updated” date at the top of this page.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        Contact
+      </h2>
+      <p>
+        Questions about this policy? Email
+        <a class="text-link hover:underline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+        or visit our <a class="text-link hover:underline" href="/contact"
+          >contact page</a
+        >.
+      </p>
+    </div>
+  </article>
+</Layout>

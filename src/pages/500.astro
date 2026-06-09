@@ -1,0 +1,50 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "500 — Something Went Wrong | Nutri Swapper";
+const description =
+  "An unexpected error occurred. Try again in a moment or head back to the Nutri Swapper calculator.";
+---
+
+<Layout
+  title={title}
+  description={description}
+  path="/500"
+  localized={false}
+  noindex={true}
+>
+  <section class="relative isolate overflow-hidden">
+    <div class="mesh-bg pointer-events-none absolute inset-0 -z-10"></div>
+    <div
+      class="mx-auto flex max-w-[680px] flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32"
+    >
+      <p class="font-mono text-xs uppercase tracking-wider text-mute">// Error</p>
+      <p
+        class="mt-4 font-mono text-[88px] font-medium leading-none text-ink tabular-nums sm:text-[120px]"
+      >
+        500
+      </p>
+      <h1
+        class="mt-4 text-3xl font-semibold tracking-[-1.28px] text-ink sm:text-4xl"
+      >
+        Something went wrong.
+      </h1>
+      <p class="mt-4 max-w-md text-lg leading-relaxed text-body">
+        An unexpected error occurred on our end. Please try again in a moment —
+        if it keeps happening, let us know.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="/"
+          class="inline-flex h-11 items-center rounded-full bg-accent px-5 font-medium text-on-accent transition-opacity hover:opacity-90"
+          >Back to calculator</a
+        >
+        <a
+          href="/contact"
+          class="inline-flex h-11 items-center rounded-full border border-hairline px-5 font-medium text-ink transition-colors hover:border-hairline-strong hover:bg-surface"
+          >Report a problem</a
+        >
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,69 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "About Nutri Swapper — The Macro & Calorie Swap Calculator";
+const description =
+  "Learn about Nutri Swapper, a free zero-login macro and calorie density swap calculator built for fast, real-world ingredient substitutions in the kitchen and gym.";
+---
+
+<Layout title={title} description={description} path="/about" localized={false}>
+  <article class="mx-auto max-w-[760px] px-4 py-16 sm:px-6 sm:py-24">
+    <p class="font-mono text-xs uppercase tracking-wider text-mute">// About</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-[-2px] text-ink sm:text-5xl">
+      About Nutri Swapper
+    </h1>
+
+    <div class="mt-6 space-y-5 text-body leading-relaxed">
+      <p>
+        <strong class="text-ink">Nutri Swapper</strong> is a free macro and
+        calorie density swap calculator with a single, focused job: telling you
+        the exact weight of a substitute ingredient that matches the protein or
+        calories of the food you ran out of. No accounts, no onboarding, no
+        clutter — just an instant answer when you need it.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        Why we built it
+      </h2>
+      <p>
+        Most nutrition tools are built to log an entire day of eating. They make
+        you sign up, sit through onboarding, and load heavy pages that crawl on
+        mobile — the exact moment you're standing in the kitchen mid-recipe or
+        planning a meal at the gym. We wanted the opposite: a tool that does one
+        thing brilliantly and disappears. Nutri Swapper loads in under a second,
+        works without a login, and answers “what weight of this equals that?”
+        before a bloated app would finish loading.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        How it works
+      </h2>
+      <p>
+        Every food in our database stores its macros per 100 grams. You enter the
+        weight of what you have, choose a substitute, and pick whether to keep
+        protein or calories constant. Nutri Swapper solves for the substitute's
+        weight and shows a side-by-side macro breakdown so you can see exactly
+        what the swap costs or saves you — extra calories on a protein swap, or a
+        shift in protein on a calorie swap.
+      </p>
+
+      <h2 class="pt-4 text-xl font-semibold tracking-[-0.6px] text-ink">
+        Who it's for
+      </h2>
+      <p>
+        Lifters and dieters keeping protein on target, meal-preppers cooking
+        around the pantry, and home cooks substituting one ingredient for another
+        without wrecking a day's totals. The database covers 40+ common fitness
+        and kitchen staples, and popular swaps each have a dedicated page with the
+        calculator pre-loaded.
+      </p>
+
+      <p class="pt-2">
+        Have a suggestion or spotted a number that looks off?
+        <a class="text-link hover:underline" href="/contact">Get in touch</a> — or
+        jump straight back to the
+        <a class="text-link hover:underline" href="/">swap calculator</a>.
+      </p>
+    </div>
+  </article>
+</Layout>

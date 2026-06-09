@@ -27,20 +27,64 @@ const keywords = isEn
 
 const seoFaqs = [
   {
-    q: "Is Nutri Swapper a nutri grain bar or a nutri protein shake?",
-    a: "No. Nutri Swapper is not a food brand, nutri grain bars or a nutri protein shake — it is a free online nutrition calculator and macro swap tool. If you searched for nutri source, nutri swap or nutri converter to turn one food's macros into another, this is the tool.",
+    q: "What is Nutri Swapper?",
+    a: "Nutri Swapper is a free macro and calorie density swap calculator. It tells you the exact weight of a substitute ingredient that matches the protein or calories of the food you ran out of — with no login and nothing to install.",
   },
   {
-    q: "Does Nutri Swapper need an account?",
-    a: "No. There is no login, no paywall and no app to install — it is a zero-login nutrition swap calculator that works instantly in your browser.",
+    q: "How does the Nutri Swapper calculator work?",
+    a: "Every food stores its macros per 100 grams. You enter the weight of what you have, pick a replacement, and choose whether to match protein or calories. Nutri Swapper then solves for the gram weight of the substitute and shows a side-by-side macro breakdown.",
   },
   {
-    q: "How accurate is the nutri swap calculator?",
-    a: "Macros are per 100 g and based on standard nutrition data, so treat results as a close, practical estimate rather than lab-grade values.",
+    q: "Is Nutri Swapper free to use?",
+    a: "Yes. Nutri Swapper is completely free, with no account, no paywall and nothing to download. It works instantly in any modern browser.",
+  },
+  {
+    q: "Do I need to sign up or create an account?",
+    a: "No. It is a zero-login nutrition swap tool — open the page and start swapping. We never ask for an email or password.",
+  },
+  {
+    q: "How do I match protein between two ingredients?",
+    a: "Select 'match protein' and Nutri Swapper keeps grams of protein identical while solving for weight, using W_b = W_a × (P_a ÷ P_b). It also shows the calorie difference the protein swap creates.",
+  },
+  {
+    q: "How do I match calories instead of protein?",
+    a: "Select 'match calories' and the tool holds energy constant with W_b = W_a × (C_a ÷ C_b). You will see how the macros shift — usually more or less protein — at the same calorie count.",
   },
   {
     q: "What is a macro and calorie density swap?",
-    a: "It is matching the protein or calories of one ingredient with the correct weight of another. Nutri Swapper compares macro and caloric density directly, so it works as a density swap calculator and food density swap calculator for everyday ingredient substitutions.",
+    a: "It is matching the protein or calories of one food with the correct weight of another. Because Nutri Swapper compares macro and caloric density directly, it works as a density swap calculator and food density swap calculator for everyday ingredient substitutions.",
+  },
+  {
+    q: "Can I use Nutri Swapper on my phone in the kitchen or gym?",
+    a: "Yes. The site is mobile-first and loads in under a second, so you can run a quick calorie swap or protein swap mid-recipe or while planning a meal. There is no app to download.",
+  },
+  {
+    q: "How accurate are the nutrition values?",
+    a: "Macros are listed per 100 g and based on standard nutrition data. Treat the results as a close, practical estimate for cooking and meal prep rather than lab-grade measurements, since real packaging can vary.",
+  },
+  {
+    q: "Which foods and ingredients can I swap?",
+    a: "Nutri Swapper covers 40+ common fitness and kitchen staples — eggs, chicken breast, paneer, tofu, soya chunks, whey protein, greek yogurt, lentils, oats, rice, nuts and more — and you can swap any of them in either direction.",
+  },
+  {
+    q: "What are the most popular ingredient swaps?",
+    a: "Common searches include soya chunks to eggs, paneer to tofu, peanuts to roasted chana and whey protein to greek yogurt. Each popular swap has its own page with the calculator pre-loaded.",
+  },
+  {
+    q: "Is Nutri Swapper a nutri grain bar, nutri protein shake or food brand?",
+    a: "No. Nutri Swapper is not a food product, nutri grain bars or a nutri protein shake — it is an online nutrition calculator and macro swap tool. If you searched for nutri source, nutri swap or nutri converter to convert one food's macros into another, this is the right tool.",
+  },
+  {
+    q: "Can I use Nutri Swapper for weight loss or a cut?",
+    a: "Yes. Use 'match protein' to find a lower-calorie ingredient that keeps your protein the same, or 'match calories' to compare protein density. It is an easy way to trim calories without losing protein on a cut.",
+  },
+  {
+    q: "Does Nutri Swapper work for vegetarian and vegan substitutions?",
+    a: "Yes. It includes plant proteins like tofu, tempeh, seitan, soya chunks, lentils and chickpeas, so you can build vegetarian or vegan nutrition swaps that still hit your protein target.",
+  },
+  {
+    q: "Is my data saved or tracked?",
+    a: "Nutri Swapper has no accounts, and every calculation runs in your browser — the ingredients and weights you enter are never sent anywhere. We use Google Analytics to measure aggregate, anonymous traffic, and your theme and language preferences are stored locally on your device. See the Privacy Policy for details.",
   },
 ];
 
@@ -64,7 +108,7 @@ const jsonLd = isEn
           mainEntity: seoFaqs.map((f) => ({
             "@type": "Question",
             name: f.q,
-            acceptedAnswer: { "@type": "Answer", text: f.a },
+            acceptedAnswer: { "@type": "Answer", text: `<p>${f.a}</p>` },
           })),
         },
       ],

@@ -22,7 +22,7 @@ const name = (slug: string) =>
 
 <footer class="border-t border-hairline">
   <div class="mx-auto max-w-[1200px] px-4 py-12 sm:px-6">
-    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
       <div class="lg:col-span-2">
         <div class="flex items-center gap-2">
           <span
@@ -80,6 +80,34 @@ const name = (slug: string) =>
               href={`${home}#popular`}
               class="text-body transition-colors hover:text-ink"
               >{t("footer.allSwaps")}</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="font-mono text-xs uppercase tracking-wider text-mute">
+          {t("footer.company")}
+        </h2>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li>
+            <a href="/about" class="text-body transition-colors hover:text-ink"
+              >{t("nav.about")}</a
+            >
+          </li>
+          <li>
+            <a href="/contact" class="text-body transition-colors hover:text-ink"
+              >{t("nav.contact")}</a
+            >
+          </li>
+          <li>
+            <a href="/privacy" class="text-body transition-colors hover:text-ink"
+              >{t("footer.privacy")}</a
+            >
+          </li>
+          <li>
+            <a href="/terms" class="text-body transition-colors hover:text-ink"
+              >{t("footer.terms")}</a
             >
           </li>
         </ul>

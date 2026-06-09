@@ -24,6 +24,10 @@ interface Props {
   lang?: Locale;
   /** Comma-separated keywords for the <meta name="keywords"> tag */
   keywords?: string;
+  /** False for English-only utility pages (no /es, /hi variants exist) */
+  localized?: boolean;
+  /** True to keep the page out of search indexes (error pages) */
+  noindex?: boolean;
   jsonLd?: Record<string, unknown>;
 }
 
@@ -33,13 +37,21 @@ const {
   path = "/",
   lang = DEFAULT_LOCALE,
   keywords,
+  localized = true,
+  noindex = false,
   jsonLd,
 } = Astro.props;
 const SITE = "https://nutriswapper.com";
 const canonical = SITE + localizePath(path, lang);
-const alternates = alternatesFor(path, SITE);
+// Localized pages advertise every locale; English-only pages advertise just en.
+const alternates = localized
+  ? alternatesFor(path, SITE)
+  : [
+      { lang: "en" as Locale, href: SITE + path },
+      { lang: "x-default" as Locale, href: SITE + path },
+    ];
 const ogImage = `${SITE}/web-app-manifest-512x512.png`;
-const altLocales = LOCALES.filter((l) => l !== lang);
+const altLocales = localized ? LOCALES.filter((l) => l !== lang) : [];
 ---
 
 <!doctype html>
@@ -55,11 +67,33 @@ const altLocales = LOCALES.filter((l) => l !== lang);
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="generator" content={Astro.generator} />
 
+    {/* Google Analytics (GA4) — production builds only, so dev traffic isn't counted */}
+    {
+      import.meta.env.PROD && (
+        <Fragment>
+          <script
+            is:inline
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-0E1B7MEJP2"
+          />
+          <script is:inline>
+            {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0E1B7MEJP2');`}
+          </script>
+        </Fragment>
+      )
+    }
+
     <title>{title}</title>
     <meta name="description" content={description} />
     {keywords && <meta name="keywords" content={keywords} />}
     <meta name="author" content="Nutri Swapper" />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta
+      name="robots"
+      content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large"}
+    />
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#000000" />
 
@@ -118,7 +152,7 @@ const altLocales = LOCALES.filter((l) => l !== lang);
   </head>
   <body>
     <div class="flex min-h-screen flex-col">
-      <Header lang={lang} path={path} />
+      <Header lang={lang} path={path} localized={localized} />
       <main class="flex-1">
         <slot />
       </main>

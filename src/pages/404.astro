@@ -1,0 +1,50 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const title = "404 — Page Not Found | Nutri Swapper";
+const description =
+  "We couldn't find that page. Head back to the Nutri Swapper calculator or browse popular ingredient swaps.";
+---
+
+<Layout
+  title={title}
+  description={description}
+  path="/404"
+  localized={false}
+  noindex={true}
+>
+  <section class="relative isolate overflow-hidden">
+    <div class="mesh-bg pointer-events-none absolute inset-0 -z-10"></div>
+    <div
+      class="mx-auto flex max-w-[680px] flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32"
+    >
+      <p class="font-mono text-xs uppercase tracking-wider text-mute">// Error</p>
+      <p
+        class="mt-4 font-mono text-[88px] font-medium leading-none text-ink tabular-nums sm:text-[120px]"
+      >
+        404
+      </p>
+      <h1
+        class="mt-4 text-3xl font-semibold tracking-[-1.28px] text-ink sm:text-4xl"
+      >
+        This page wandered off.
+      </h1>
+      <p class="mt-4 max-w-md text-lg leading-relaxed text-body">
+        The page you're looking for doesn't exist or has moved. The swap you
+        wanted is probably still here — head back and recalculate.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="/"
+          class="inline-flex h-11 items-center rounded-full bg-accent px-5 font-medium text-on-accent transition-opacity hover:opacity-90"
+          >Back to calculator</a
+        >
+        <a
+          href="/#popular"
+          class="inline-flex h-11 items-center rounded-full border border-hairline px-5 font-medium text-ink transition-colors hover:border-hairline-strong hover:bg-surface"
+          >Browse popular swaps</a
+        >
+      </div>
+    </div>
+  </section>
+</Layout>

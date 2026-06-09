@@ -11,11 +11,16 @@ interface Props {
   lang: Locale;
   /** English canonical path of the current page, for language switching */
   path: string;
+  /** False on English-only pages — switcher then points at each locale's home */
+  localized?: boolean;
 }
 
-const { lang, path } = Astro.props;
+const { lang, path, localized = true } = Astro.props;
 const t = useTranslations(lang);
 const home = localizePath("/", lang);
+// Where each language option should go when switching from this page.
+const switchTarget = (l: Locale) =>
+  localized ? localizePath(path, l) : localizePath("/", l);
 ---
 
 <header
@@ -45,6 +50,16 @@ const home = localizePath("/", lang);
         class="hidden rounded-full px-3 py-1.5 text-body transition-colors hover:bg-surface hover:text-ink sm:inline-block"
         >{t("nav.how")}</a
       >
+      <a
+        href="/about"
+        class="hidden rounded-full px-3 py-1.5 text-body transition-colors hover:bg-surface hover:text-ink sm:inline-block"
+        >{t("nav.about")}</a
+      >
+      <a
+        href="/contact"
+        class="hidden rounded-full px-3 py-1.5 text-body transition-colors hover:bg-surface hover:text-ink sm:inline-block"
+        >{t("nav.contact")}</a
+      >
 
       <!-- Language switcher -->
       <details class="group relative" data-lang-menu>
@@ -72,7 +87,7 @@ const home = localizePath("/", lang);
             LOCALES.map((l) => (
               <li>
                 <a
-                  href={localizePath(path, l)}
+                  href={switchTarget(l)}
                   hreflang={l}
                   aria-current={l === lang ? "true" : undefined}
                   class="flex items-center justify-between rounded-sm px-3 py-1.5 text-sm text-body transition-colors hover:bg-surface-3 hover:text-ink aria-[current]:text-ink"

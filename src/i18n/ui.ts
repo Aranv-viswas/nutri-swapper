@@ -30,6 +30,8 @@ export const ui = {
   en: {
     "nav.popular": "Popular swaps",
     "nav.how": "How it works",
+    "nav.about": "About",
+    "nav.contact": "Contact",
     "nav.theme": "Toggle theme",
     "nav.language": "Language",
 
@@ -91,6 +93,9 @@ export const ui = {
     "footer.tool": "Tool",
     "footer.swapCalc": "Swap calculator",
     "footer.allSwaps": "All swaps",
+    "footer.company": "Company",
+    "footer.privacy": "Privacy Policy",
+    "footer.terms": "Terms & Conditions",
     "footer.disclaimer":
       "Macros are per 100 g and approximate. For information only — not medical or dietary advice.",
 
@@ -125,6 +130,8 @@ export const ui = {
   es: {
     "nav.popular": "Intercambios populares",
     "nav.how": "Cómo funciona",
+    "nav.about": "Acerca de",
+    "nav.contact": "Contacto",
     "nav.theme": "Cambiar tema",
     "nav.language": "Idioma",
 
@@ -192,6 +199,9 @@ export const ui = {
     "footer.tool": "Herramienta",
     "footer.swapCalc": "Calculadora de intercambios",
     "footer.allSwaps": "Todos los intercambios",
+    "footer.company": "Empresa",
+    "footer.privacy": "Política de privacidad",
+    "footer.terms": "Términos y condiciones",
     "footer.disclaimer":
       "Los macros son por 100 g y aproximados. Solo informativo — no es consejo médico ni dietético.",
 
@@ -228,6 +238,8 @@ export const ui = {
   hi: {
     "nav.popular": "लोकप्रिय स्वैप",
     "nav.how": "यह कैसे काम करता है",
+    "nav.about": "परिचय",
+    "nav.contact": "संपर्क",
     "nav.theme": "थीम बदलें",
     "nav.language": "भाषा",
 
@@ -295,6 +307,9 @@ export const ui = {
     "footer.tool": "टूल",
     "footer.swapCalc": "स्वैप कैलकुलेटर",
     "footer.allSwaps": "सभी स्वैप",
+    "footer.company": "कंपनी",
+    "footer.privacy": "गोपनीयता नीति",
+    "footer.terms": "नियम एवं शर्तें",
     "footer.disclaimer":
       "मैक्रोज़ प्रति 100 g और अनुमानित हैं। केवल जानकारी के लिए — चिकित्सकीय या आहार संबंधी सलाह नहीं।",
 

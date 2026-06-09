@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nutriswapper.com/sitemap-index.xml
+Sitemap: https://nutriswapper.com/sitemap.xml

@@ -1,0 +1,8 @@
+name = "nutri-swapper"
+compatibility_date = "2026-06-09"
+
+# Static Astro build output served directly from Cloudflare's edge.
+# No Worker script is needed — this is an assets-only Worker.
+[assets]
+directory = "./dist"
+not_found_handling = "404-page"
